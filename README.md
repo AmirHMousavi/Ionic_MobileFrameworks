@@ -3,7 +3,7 @@ Multiplatform Mobile App Development with Web Technologies, by The Hong Kong Uni
 
 #### Multiplatform Mobile App Development with Web Technologies course. This course is the 4th in the series of 6 courses that form part of the Full-Stack Web Development Specialization. 
 
-##Syllabus
+##Syllabus;
 
 ####Week 1
 Hybrid Mobile App Development Frameworks: An Introduction
