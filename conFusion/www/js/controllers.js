@@ -11,24 +11,23 @@ angular.module('conFusion.controllers', [])
 
   // Form data for the login modal
   $scope.loginData = {};
+  $scope.reservationData = {};
 
+  //******************LOGIN*****************************************
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.modal = modal;
   });
-
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
-
   // Open the login modal
   $scope.login = function() {
     $scope.modal.show();
   };
-
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
     console.log('Doing login', $scope.loginData);
@@ -39,6 +38,32 @@ angular.module('conFusion.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+  //*******************RESERVATION*************************************
+  // Create the reserve modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/reserve.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.reserveform = modal;
+  });
+  // Triggered in the reserve modal to close it
+  $scope.closeReserve = function() {
+    $scope.reserveform.hide();
+  };
+  // Open the reserve modal
+  $scope.reserve = function() {
+    $scope.reserveform.show();
+  };
+  // Perform the reserve action when the user submits the reserve form
+  $scope.doReserve = function() {
+    console.log('Doing reservation', $scope.reservationData);
+
+    // Simulate a reservation delay. Remove this and replace with your reservation
+    // code if using a server system
+    $timeout(function() {
+      $scope.closeReserve();
+    }, 1000);
+  };
+
 })
 
 .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
@@ -216,13 +241,14 @@ angular.module('conFusion.controllers', [])
 .controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
 
   $scope.baseURL = baseURL;
-  $scope.showLeaders=false;
+  $scope.showLeaders = false;
   $scope.message = "Loading ...";
   $scope.leaders = corporateFactory.getLeaders().query(
-    function(response){
-      $scope.leaders=response;
-      $scope.showLeaders=true;
-    },function(response){
+    function(response) {
+      $scope.leaders = response;
+      $scope.showLeaders = true;
+    },
+    function(response) {
       $scope.message = "Error: " + response.status + " " + response.statusText;
     }
   );
