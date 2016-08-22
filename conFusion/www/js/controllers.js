@@ -190,7 +190,7 @@ angular.module('conFusion.controllers', [])
 .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'baseURL', function($scope, menuFactory, corporateFactory, baseURL) {
 
   $scope.baseURL = baseURL;
-  $scope.leader = corporateFactory.get({
+  $scope.leader = corporateFactory.getLeaders().get({
     id: 3
   });
   $scope.showDish = false;
@@ -213,11 +213,20 @@ angular.module('conFusion.controllers', [])
 
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
 
-  $scope.leaders = corporateFactory.query();
+  $scope.baseURL = baseURL;
+  $scope.showLeaders=false;
+  $scope.message = "Loading ...";
+  $scope.leaders = corporateFactory.getLeaders().query(
+    function(response){
+      $scope.leaders=response;
+      $scope.showLeaders=true;
+    },function(response){
+      $scope.message = "Error: " + response.status + " " + response.statusText;
+    }
+  );
   console.log($scope.leaders);
-
 }])
 
 ;
