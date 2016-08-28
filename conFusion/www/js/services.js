@@ -1,39 +1,30 @@
 'use strict';
 
 angular.module('confusion.services', ['ngResource'])
-  .constant("baseURL", "http://localhost:3000/")
+  .constant("baseURL", "http://192.168.1.100:3000/")
   .factory('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-
     return $resource(baseURL + "dishes/:id", null, {
       'update': {
         method: 'PUT'
       }
     });
-
   }])
 
 .factory('promotionFactory', ['$resource', 'baseURL', function($resource, baseURL) {
   return $resource(baseURL + "promotions/:id");
-
 }])
 
-.service('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-
-  this.getLeaders = function() {
-    return $resource(baseURL + "leadership/:id");
-  };
-
+.factory('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+  return $resource(baseURL + "leadership/:id");
 }])
 
 .factory('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
-
   return $resource(baseURL + "feedback/:id");
-
 }])
 
-.factory('favoriteFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+.factory('favoriteFactory', ['$resource', 'baseURL', '$localStorage', function($resource, baseURL, $localStorage) {
   var favFac = {};
-  var favorites = [];
+  var favorites = $localStorage.get('favorites', []);
 
   favFac.addToFavorites = function(index) {
     for (var i = 0; i < favorites.length; i++) {
@@ -43,6 +34,7 @@ angular.module('confusion.services', ['ngResource'])
     favorites.push({
       id: index
     });
+    $localStorage.storeObject('favorites', favorites);
   };
   favFac.deleteFromFavorites = function(index) {
     for (var i = 0; i < favorites.length; i++) {
@@ -50,8 +42,8 @@ angular.module('confusion.services', ['ngResource'])
         favorites.splice(i, 1);
       }
     }
+    $localStorage.storeObject('favorites', favorites);
   }
-
   favFac.getFavorites = function() {
     return favorites;
   };

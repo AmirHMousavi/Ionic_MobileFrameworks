@@ -74,6 +74,12 @@
           "comment": "asghar3 is asghar3",
           "author": "asghar3",
           "date": "2016-08-25T12:43:20.622Z"
+        },
+        {
+          "rating": "5",
+          "comment": "test on android emulator",
+          "author": "amir",
+          "date": "2016-08-26T10:03:38.998Z"
         }
       ]
     },
