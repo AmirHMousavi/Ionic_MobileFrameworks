@@ -67,7 +67,7 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', '$ionicListDelegate', 'favoriteFactory', 'baseURL', 'dishes', '$localStorage', function($scope, $ionicListDelegate, favoriteFactory, baseURL, dishes, $localStorage) {
+.controller('MenuController', ['$scope', '$ionicListDelegate', 'favoriteFactory', 'baseURL', 'dishes', '$localStorage', '$ionicPlatform', '$cordovaLocalNotification', '$cordovaToast', function($scope, $ionicListDelegate, favoriteFactory, baseURL, dishes, $localStorage, $ionicPlatform, $cordovaLocalNotification, $cordovaToast) {
 
   $scope.baseURL = baseURL;
   $scope.tab = 1;
@@ -96,8 +96,27 @@ angular.module('conFusion.controllers', [])
   $scope.addFavorite = function(index) {
     favoriteFactory.addToFavorites(index);
     $ionicListDelegate.closeOptionButtons();
-  };
+    $ionicPlatform.ready(function() {
+      $cordovaLocalNotification.schedule({
+        id: 1,
+        title: "Added Favorite",
+        text: $scope.dishes[index].name
+      }).then(function() {
+          console.log('Added Favorite ' + $scope.dishes[index].name);
+        },
+        function() {
+          console.log('Failed to add Notification ');
+        });
 
+      $cordovaToast
+        .show('Added Favorite ' + $scope.dishes[index].name, 'long', 'center')
+        .then(function(success) {
+          // success
+        }, function(error) {
+          // error
+        });
+    });
+  };
 }])
 
 .controller('ContactController', ['$scope', function($scope) {
@@ -233,21 +252,41 @@ angular.module('conFusion.controllers', [])
   console.log($scope.leaders);
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+
   $scope.baseURL = baseURL;
   $scope.shouldShowDelete = false;
 
   $scope.favorites = favorites;
   $scope.dishes = dishes;
 
+  console.log($scope.dishes, $scope.favorites);
+
   $scope.toggleDelete = function() {
     $scope.shouldShowDelete = !$scope.shouldShowDelete;
-  }
+    console.log($scope.shouldShowDelete);
+  };
 
   $scope.deleteFavorite = function(index) {
-    favoriteFactory.deleteFromFavorites(index);
+
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Confirm Delete',
+      template: 'Are you sure you want to delete this item?'
+    });
+
+    confirmPopup.then(function(res) {
+      if (res) {
+        console.log('Ok to delete');
+        favoriteFactory.deleteFromFavorites(index);
+      } else {
+        console.log('Canceled delete');
+      }
+    });
+
     $scope.shouldShowDelete = false;
-  }
+
+  };
+
 }])
 
 .filter('favoriteFilter', function() {

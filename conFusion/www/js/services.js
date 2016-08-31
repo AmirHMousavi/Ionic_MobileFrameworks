@@ -24,18 +24,8 @@ angular.module('confusion.services', ['ngResource'])
 
 .factory('favoriteFactory', ['$resource', 'baseURL', '$localStorage', function($resource, baseURL, $localStorage) {
   var favFac = {};
-  var favorites = $localStorage.get('favorites', []);
+  var favorites = $localStorage.getObject('favorites', '[]');
 
-  favFac.addToFavorites = function(index) {
-    for (var i = 0; i < favorites.length; i++) {
-      if (favorites[i].id == index)
-        return;
-    }
-    favorites.push({
-      id: index
-    });
-    $localStorage.storeObject('favorites', favorites);
-  };
   favFac.deleteFromFavorites = function(index) {
     for (var i = 0; i < favorites.length; i++) {
       if (favorites[i].id == index) {
@@ -44,9 +34,24 @@ angular.module('confusion.services', ['ngResource'])
     }
     $localStorage.storeObject('favorites', favorites);
   }
+
   favFac.getFavorites = function() {
     return favorites;
   };
+
+  favFac.addToFavorites = function(index) {
+    for (var i = 0; i < favorites.length; i++) {
+      if (favorites[i].id == index)
+        return;
+    };
+
+    favorites.push({
+      id: index
+    });
+    $localStorage.storeObject('favorites', favorites);
+
+  };
+
   return favFac;
 }])
 
